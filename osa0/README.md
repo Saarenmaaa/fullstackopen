@@ -9,13 +9,13 @@ sequenceDiagram
 
     selain->>palvelin: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate palvelin
-    palvelin-->>selain: Http koodi 302 eli uudelleenohjauspyyntö.
+    palvelin-->>selain: Http statuskoodi 302 eli uudelleenohjauspyyntö, osoitteeseen /notes.
     Note left of palvelin: palvelin kehottaa selainta tekemään automaattisesti uuden HTTP GET -pyynnön /osoitteeseen notes
     deactivate palvelin
     
     selain->>palvelin: GET https://studies.cs.helsinki.fi/exampleapp/notes
-    Note right of selain: Selain lataa uudelleen muistiinpano sivun. Sivunlataus saa aikaan myös kolme muuta HTTP-pyyntöä: (main.css),(main.js),(data.json)
     activate palvelin
+    Note right of selain: Selain lataa uudelleen muistiinpano sivun. Sivunlataus saa aikaan myös kolme muuta HTTP-pyyntöä: (main.css),(main.js),(data.json)
     palvelin-->>selain: HTML tiedosto
     deactivate palvelin
     

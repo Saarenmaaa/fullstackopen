@@ -37,3 +37,52 @@ sequenceDiagram
 
     Note right of selain: selain suorittaa tapahtumankäsittelijän, joka renderöi muistiinpanot ruudulle
 ```
+
+# 0.5: Single Page App
+
+```mermaid
+sequenceDiagram
+    participant selain
+    participant palvelin
+
+    Note right of selain:  Sivunlataus saa aikaan kolme HTTP-pyyntöä: html, css, js. js aloittaa Json tiedoston pyynnön.
+    selain->>palvelin: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    activate palvelin
+    palvelin-->>selain: HTML tiedosto
+    deactivate palvelin
+    
+    selain->>palvelin: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate palvelin
+    palvelin-->>selain: Css tiedosto
+    deactivate palvelin
+    
+    selain->>palvelin: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    activate palvelin
+    palvelin-->>selain: Javascript tiedosto
+    deactivate palvelin
+    
+    Note right of selain: Javascript aloittaa koodin joka hakee JSON tiedoston palvelimelta, jonka jälkeen suorittaa funktion reDrawNotes joka tekee muistiinpanot sivulle.
+    selain->>palvelin: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate palvelin
+    palvelin-->>selain: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+    deactivate palvelin 
+  
+```
+
+# 0.6: Uusi muistiinpano
+
+```mermaid
+sequenceDiagram
+    participant selain
+    participant palvelin
+
+    
+    Note right of selain: Kun muistiinpano submitoidaan, tapahtumankäsittelijän e.preventDefault() estää lomakkeen oletusarvoisen toiminnan (lähetys, uudelleen lataus tms..), eikä sivua ladata uudelleen.
+    Note right of selain: Javascript->( työntää uuden datan noteseihin, notes lista uudelleenkirjoitetaan, ja uusi muistiinpano lähetetään palvelimelle /new_note_spa POST määrityksillä javascriptissä, JSON muodossa.)
+    selain->>palvelin: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate palvelin
+    palvelin-->>selain: Status code: 201 created. "POST pyyntö onnistui ja uusi resurssi luotiin."
+    Note left of palvelin: Selain pysyy samalla sivulla ja uudelleenohjausta ei suoriteta.
+    deactivate palvelin
+
+```
